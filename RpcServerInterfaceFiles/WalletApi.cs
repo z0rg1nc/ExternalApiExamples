@@ -4,11 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using AesHelper;
-using ClientJsonInterfaces.WalletServer;
-using MiscUtil.Conversion;
-using MiscUtil.IO;
-using MiscUtils;
+using BtmI2p.AesHelper;
+using BtmI2p.GeneralClientInterfaces.WalletServer;
+using BtmI2p.MiscUtil.Conversion;
+using BtmI2p.MiscUtil.IO;
+using BtmI2p.MiscUtils;
 using Xunit;
 
 /*
@@ -16,7 +16,7 @@ DateTime input strings - yyyyMMddHHmmss UTC
 throws JsonException
 */
 
-namespace BitMoneyExternalAppsApiNs
+namespace BtmI2p.ExternalAppsLocalApi
 {
     public enum EGeneralWalletLocalApiErrorCodes20151004
     {

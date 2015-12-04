@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
-using ClientJsonInterfaces.WalletServer;
-using MiscUtils;
+using BtmI2p.GeneralClientInterfaces.WalletServer;
+using BtmI2p.MiscUtils;
 using Xunit;
 
 /*
@@ -10,7 +9,7 @@ DateTime input strings - yyyyMMddHHmmss UTC
 throws JsonException
 */
 
-namespace BitMoneyExternalAppsApiNs
+namespace BtmI2p.ExternalAppsLocalApi
 {
     public enum EGeneralProxyLocalApiErrorCodes20151004
     {
