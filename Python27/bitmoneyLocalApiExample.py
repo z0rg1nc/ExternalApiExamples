@@ -177,7 +177,6 @@ def test_wallet_api():
 	print "HMAC signature required:", hmac_signature_required
 	# define transfer parameters
 	request_guid = str(uuid.uuid4())
-	sent_time_string = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
 	anonymous_transfer = False
 	transfer_amount = 10
 	transfer_comment_u_string = u"Test comment #9999 测试"
@@ -188,10 +187,6 @@ def test_wallet_api():
 	# estimate fee
 	expected_fee = http_client.EstimateFee20151004(base_wallet_guid, second_wallet_guid, transfer_amount, transfer_comment_bytes_len, anonymous_transfer)
 	print "Expected fee:", expected_fee
-	# calc hmac signature
-	hmac_signature_b64 = ""
-	if hmac_signature_required == True:
-		hmac_signature_b64 = calc_hmac_code(request_guid, sent_time_string, base_wallet_guid, second_wallet_guid, transfer_amount, anonymous_transfer, transfer_comment_bytes_b64, expected_fee, hmac_code_b64)
 	# check is wallet_to (second_wallet_guid) registered
 	wallet_to_registered = False
 	while True:
@@ -209,6 +204,11 @@ def test_wallet_api():
 	if wallet_to_registered == False:
 		print "Second wallet is not registered"
 		return
+	# calc hmac signature
+	hmac_signature_b64 = ""
+	sent_time_string = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
+	if hmac_signature_required == True:
+		hmac_signature_b64 = calc_hmac_code(request_guid, sent_time_string, base_wallet_guid, second_wallet_guid, transfer_amount, anonymous_transfer, transfer_comment_bytes_b64, expected_fee, hmac_code_b64)
 	# sending
 	same_request_guid = http_client.SendTransfer20151004(request_guid, base_wallet_guid, second_wallet_guid, transfer_amount, sent_time_string, anonymous_transfer, transfer_comment_bytes_b64, expected_fee, hmac_signature_b64)
 	print "Request GUID:", same_request_guid
@@ -221,6 +221,7 @@ def test_wallet_api():
 			request_status_response = http_client.GetSentTransferRequestStatus20151004(base_wallet_guid, request_guid, recheck_request_status)
 			request_status = ESentRequestStatus20151004(request_status_response["Status"])
 			if (request_status == ESentRequestStatus20151004.PreparedToSend) or (request_status == ESentRequestStatus20151004.NotFound):
+				time.sleep(1)
 				recheck_request_status = True
 			else:
 				break
@@ -302,6 +303,7 @@ def test_wallet_api():
 			request_status_response = http_client.GetSentTransferRequestStatus20151004(second_wallet_guid, request_guid, recheck_request_status)
 			request_status = ESentRequestStatus20151004(request_status_response["Status"])
 			if (request_status == ESentRequestStatus20151004.PreparedToSend) or (request_status == ESentRequestStatus20151004.NotFound):
+				time.sleep(1)
 				recheck_request_status = True
 			else:
 				break
@@ -319,7 +321,7 @@ def test_wallet_api():
 	related_transfer_guid_list = request_status_response["RelatedTransferGuidList"]
 	transfer_guid = str(uuid.UUID(related_transfer_guid_list[0]))
 	print "2Transfer GUID:", transfer_guid
-	# Try get all transfers in time range with data cursors
+	# Try to get all transfers in time range with data cursors
 	now_time_utc = datetime.datetime.utcnow()
 	start_time = now_time_utc - datetime.timedelta(0, 60*10) # -10 minutes
 	end_time = now_time_utc + datetime.timedelta(0, 60*5) # +5 minutes
